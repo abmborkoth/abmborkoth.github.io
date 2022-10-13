@@ -1,0 +1,123 @@
+jQuery(document).ready(function ($) {
+    
+    $("[name=departing_date],[name=returning_date]").keypress(function () {
+        return false;
+    })
+    $("body").on('click', "[name=bsbn]", function () {
+      
+        var $error = 0;
+      
+      if(!$('[name=go_from]').val()){
+        $error++;
+        $('[name=go_from]').addClass('error-border');
+         $('.go_from_error').html('<b style="color:red;font-size:12px">Enter Living From City</b>');
+      }else{
+        $('[name=go_from]').removeClass('error-border');
+        $('.go_from_error').text('');
+      }      
+      if(!$('[name=go_to]').val()){
+        $error++;
+        $('[name=go_to]').addClass('error-border');
+        $('.go_to_error').html('<b style="color:red;font-size:12px">Enter Going To City</b>');
+      }else{
+        $('[name=go_to]').removeClass('error-border');
+        $('.go_to_error').text('');
+      }
+      if(!$('[name=departing_date]').val()){
+        $error++;
+        $('[name=departing_date]').addClass('error-border'); 
+        $('.departing_date_error').html('<b style="color:red;font-size:12px">Enter Departing Date</b>');
+      }else{
+        $('[name=departing_date]').removeClass('error-border');
+        $('.departing_date_error').text('');
+      }
+      
+
+        if ($error) {
+            return false;
+        } else {
+            $(this).closest('#ssform').attr('action', $(this).closest('#ssform').find('[name=fau]').val());
+        }
+    })
+    $('body').on('click', '.mvbs.abs', function () {
+        var $this = $(this);
+        var $txt = '';
+        var bsid = $this.closest(".smt").data('bsid');
+        var busFare = parseFloat($(this).closest(".eabzn ").find(".sfof" + bsid).text());
+        var ssc = parseInt($(this).closest(".ebdzn").find('.cser').length); // select seat count
+        var double = false;
+        var ssNo = 'ssn' + $this.data('seatno').substring(4);
+
+        if (parseInt($this.closest(".ebdzn").find(".ussl").children().length) < 10) {
+            
+            $this.addClass("ssbgclr").attr("id", ssNo);
+            $(".cslit").each(function () {
+                if ($.trim($(this).text()) == $.trim($this.text())) {
+                    double = true;
+                }
+            })
+            if (!double) {
+                $txt += "<tr class='cser' data-ssno=" + ssNo + ">";
+                $txt += "<td class='cslit' data-selectseat=" + $(this).data('seatno') + "><p>" + $this.text() + "</p></td>";
+                $txt += "<td class='cspf'>" + busFare + "</td>";
+                $txt += "<td><p class='csdb'>x</p></td>";
+                $txt += "</tr>";
+                $this.closest(".ebdzn").find(".ussl").append($txt);
+                $this.closest(".ebdzn").find('.tssn').text(ssc + 1);
+                $this.closest(".ebdzn").find('.bsta').text((ssc + 1) * busFare);
+                $this.closest(".ebdzn").find(".sbdt").attr('data-bscid', bsid);
+            }
+        }else{
+            alert("You can not process more then 10 tickets in a single transection!!");
+        }
+    })
+    $('body').on('click', '.csdb', function () {
+        var bsid = $(this).closest(".sbdt").data('bscid');
+        var busFare = parseFloat($(".sfof" + bsid).text());
+        var ssc = parseInt($(this).closest(".sbdt").find('.cser').length);
+        $(this).closest(".sbdt").find('.tssn').text(ssc - 1);
+        $(this).closest(".sbdt").find('.bsta').text((ssc - 1) * busFare);
+        $(this).closest(".ebdzn").find("#" + $(this).closest(".cser").data('ssno')).removeClass("ssbgclr");
+        $(this).closest('.cser').remove();
+    })
+
+    $('.eabzn').on('click', '.rsdz', function () {
+        var $this = $(this);
+        $(this).closest('.ebdzn').children().slideUp(function () {
+            $this.closest('.eabzn').removeClass("aswsv").find(".ebdzn").removeClass("swsdv");
+        });
+    })
+
+    $('ul.sstab li').click(function () {
+        var tab_id = $(this).attr('data-tab');
+        if ($(this).closest('.sstabzn').length) {
+            $(this).closest('.sstabzn').find('ul.sstab li').removeClass('active_tab');
+            $(this).closest('.sstabzn').find('.sstab-content').removeClass('active_tab');
+        } else {
+            $('ul.sstab li').removeClass('active_tab');
+            $('.sstab-content').removeClass('active_tab');
+        }
+        $(this).addClass('active_tab');
+        $("#" + tab_id).addClass('active_tab');
+    })
+    $(".tacop").click(function () {
+        $(".modal-title,.modal-body").text("");
+        if ($(this).data('aim') == 'term_con') {
+            $(".modal-title").text("TERMS AND CONDITIONS");
+            $(".modal-body").html($("#trmCon").html());
+        } else if ($(this).data('aim') == 'cancel_policy') {
+            $(".modal-title").text("REFUND POLICY");
+            $(".modal-body").html($("#cnclPlc").html());
+        }
+        $("#myModal").modal("toggle");
+    })
+    
+    
+    /*------------------MENU Customize-----------*/
+    
+    //$(".tg-primary-menu > div > ul > li").css('line-height',$("#masthead").height()+"px");    
+    
+    
+    
+
+});
